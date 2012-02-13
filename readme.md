@@ -3,12 +3,13 @@
 **riffle.js** is a stream library for managing asynchronous flow control. The library consists of a standalone *stream* module found in **riffle.js**. The *stream* module is the basic building block for asynchronous flow control. Networks of connected *stream* objects can be used to write programs that have many desireable properties.
 
 The library focuses on:
-- Modularity (decoupled in time, memory, and source code)
-- Parallelizability (good for divide and conquor algorithms)
-- Composability (if they were any more composable, they'd be legos)
-- Familiar abstractions (assembly line, flow)
-- Facilitates diagramming (structured analysis) and reasoning (concatenative programming)
-- Data-crunching, business logic, workflow, transformation problems
+
+ - Modularity (decoupled in time, memory, and source code)
+ - Parallelizability (good for divide and conquor algorithms)
+ - Composability (if they were any more composable, they'd be legos)
+ - Familiar abstractions (assembly line, flow)
+ - Facilitates diagramming (structured analysis) and reasoning (concatenative programming)
+ - Data-crunching, business logic, workflow, transformation problems
 
 Additionally, **riffleLib.js** contains a small collection of example modules for dealing with async complexity and leveraging async opportunities.
 
@@ -126,6 +127,7 @@ stream(callback)
 Constructs a stream with the specified *stream callback*. If *stream callback* is supplied, it fires each time inputs arrive at the stream. If *stream callback* is not specified, the stream outputs all *inputData*.
 
 Constructed streams are returned with the following methods:
+
  - *onOutput*
  - *input*
  - *invoke*
@@ -196,7 +198,7 @@ The *invoke* method returns the stream for chaining.
 ### stream.noConflict
 
 ```
-var MY_NAMESPACE.MyStream = Stream.noConflict()
+var MY_NAMESPACE.MyStream = stream.noConflict()
 ```
 
 When **riffle.js** is loaded in a page, it creates a variable named *stream* in the global scope. If it is possible there is already another variable named *stream*, **noConflict** may be called to revert the global scope to its prior state.
