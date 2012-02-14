@@ -22,7 +22,7 @@ I'm going to walk you through some examples of how the stream module is used. No
 To use *stream* constructor, include the **riffle.js** file in your HTML source.
 
 ```html
-<script src="/stream.js" />
+<script src="/js/riffle.js" />
 <script>
 var s1 = stream();
 </script>
