@@ -152,12 +152,12 @@ The *stream callback* may return to end its execution, but values passed to retu
 ### stream.onOutput
 
 ```
-stream.onOutput(callback[, isAdded])
+stream.onOutput(callback)
 ```
 
 Registers an *onOutput callback* to handle output from the stream. If *onOutput callback* is supplied, it fires each time *outputFunction* is called. Note that *onOutput callback* is invoked in a future iteration of the JavaScript event loop.
 
-Optionally, an *onOutput callback* may be removed from the stream by passing the function to remove and false as a second parameter.
+An *onOutput callback* may be removed from the stream by calling *offOutput*.
 
 The *onOutput* method returns the stream for chaining.
 
@@ -172,6 +172,24 @@ function ([outputData...])
 Exceptions thrown are caught by the stream, insulating environments from damage. Thrown exceptions have the effect of ending the *onOutput callback's* execution only.
 
 The *onOutput callback* may return to end its execution, but values passed to return are lost.
+
+### stream.offOutput
+
+```
+stream.offOutput(callback)
+```
+
+Unregisters the *onOutput callback*, if previously registered to handle output from the stream.
+
+The *onOutput* method returns the stream for chaining.
+
+### stream.offOutput callback
+
+```
+function ([outputData...])
+```
+
+*offOutput callback* must be the same function passed to onOutput.
 
 ### stream.input
 
