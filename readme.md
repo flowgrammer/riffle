@@ -11,9 +11,9 @@ The library focuses on:
  - Facilitates diagramming (structured analysis) and reasoning
  - Data-crunching, business logic, workflow, transformation problems
 
-Additionally, **riffleLib.js** contains a small collection of example modules for dealing with async complexity and leveraging async opportunities.
+Additionally, **riffleLib.js** contains a small collection of example modules for dealing with async complexity and leveraging async opportunities. To play with both **riffleLib** in a console, please visit the [test suite](http://flowgrammer.github.com/Riffle/test/test.html).
 
-The code is as free as I can make it without paying you to take it. Contributions are welcome!
+The code is [MIT Licensed](/flowgrammer/Riffle/blob/master/LICENSE), which is as free as I can make it without paying you to take it. Contributions are welcome!
 
 ## Examples
 
