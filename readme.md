@@ -8,7 +8,7 @@ The library focuses on:
  - Parallelizability (good for divide and conquor algorithms)
  - Composability (if they were any more composable, they'd be legos)
  - Familiar abstractions (assembly line, flow)
- - Facilitates diagramming (structured analysis) and reasoning (concatenative programming)
+ - Facilitates diagramming (structured analysis) and reasoning
  - Data-crunching, business logic, workflow, transformation problems
 
 Additionally, **riffleLib.js** contains a small collection of example modules for dealing with async complexity and leveraging async opportunities.
