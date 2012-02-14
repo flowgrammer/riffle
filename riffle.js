@@ -1,108 +1,187 @@
-(function (global, undefined) {
-    if (!global.setTimeout) return
+(function (global) {
+    "use strict";
+    var old,
+        _;
 
-    function Stream(userSuppliedStreamFn) {
+    if (!global.setTimeout) {
+        return;
+    }
+
+    function stream(userSuppliedStreamFn) {
+        var chain = {};
+
         function defaultStreamFn(output) {
-            var inputs = _.argumentsToArray(arguments)
-            inputs.shift()
-            if(inputs.length === 0) global.setTimeout(function () { output() }, 0)
+            var inputs = _.argumentsToArray(arguments);
+            inputs.shift();
+            if (inputs.length === 0) {
+                global.setTimeout(function () {
+                    output();
+                }, 0);
+            }
             _.each(inputs, function invokeOutput(input) {
                 if (!_.isUndefined(input)) {
-                    global.setTimeout(function delayedInvokeOutput() { output(input) }, 0) }})}
+                    global.setTimeout(function delayedInvokeOutput() {
+                        output(input);
+                    }, 0);
+                }
+            });
+        }
 
-        var chain = {}
-
-        ;(function () {
-            var outputFns = []
+        (function () {
+            var outputFns = [], streamFn;
             function outputAllFns() {
-                var outputs = _.argumentsToArray(arguments)
+                var outputs = _.argumentsToArray(arguments);
                 _.each(outputFns, function applyFunction(f) {
-                    _.applyArgsToFn(f, outputs) })}
-            var streamFn = _.isFunction(userSuppliedStreamFn)? userSuppliedStreamFn: defaultStreamFn;
+                    _.applyArgsToFn(f, outputs);
+                });
+            }
+            streamFn = _.isFunction(userSuppliedStreamFn) ? userSuppliedStreamFn : defaultStreamFn;
             chain.invoke = function invoke() {
-                var outputs = _.argumentsToArray(arguments)
-                outputs.unshift(outputAllFns)
-                _.applyArgsToFn(streamFn, outputs)
-                return chain }
+                var outputs = _.argumentsToArray(arguments);
+                outputs.unshift(outputAllFns);
+                _.applyArgsToFn(streamFn, outputs);
+                return chain;
+            };
             chain.onOutput = function onOutput(f) {
-                var outIdx = 0
-                if (!_.isFunction(f)) throw new Error('onOutput expecting callback function')
-                outputFns.push(f)
-                return chain }
+                if (!_.isFunction(f)) {
+                    throw new Error('onOutput expecting callback function');
+                }
+                outputFns.push(f);
+                return chain;
+            };
             chain.offOutput = function offOutput(f) {
-                var outIdx = 0
-                if (!_.isFunction(f)) throw new Error('offOutput expecting callback function')
-                outputFns = _.reject(outputFns, function isSameAsReferenceInScope(x) { return x === f })
-                return chain }
-            }())
+                if (!_.isFunction(f)) {
+                    throw new Error('offOutput expecting callback function');
+                }
+                outputFns = _.reject(outputFns, function isSameAsReferenceInScope(x) {
+                    return x === f;
+                });
+                return chain;
+            };
+        }());
 
-        ;(function () {
-            var callbacks    = []
-            var inputStreams = []
+        (function () {
+            var callbacks = [],
+                inputStreams = [];
             function wait(streams, idx) {
-                var unbindStreams = inputStreams[idx]
+                var unbindStreams = inputStreams[idx];
                 function invokeWithOneArg(x) {
-                    var outputs = new Array(idx + 1)
-                    outputs[idx] = x
-                    chain.invoke.apply(global, _.isUndefined(x)? []: outputs) }
+                    var outputs = [];
+                    outputs.length = idx + 1;
+                    outputs[idx] = x;
+                    chain.invoke.apply(global, _.isUndefined(x) ? [] : outputs);
+                }
                 if (unbindStreams) {
-                    _.each(unbindStreams, function unbindInputs(s) { s.offOutput(callbacks[idx]) })
-                    ;delete callbacks[idx]
-                    ;delete inputStreams[idx] }
-                _.each(streams, function registerOnOutput(stream) { stream.onOutput(invokeWithOneArg) })
-                callbacks[idx]    = invokeWithOneArg
-                inputStreams[idx] = streams }
+                    _.each(unbindStreams, function unbindInputs(s) {
+                        s.offOutput(callbacks[idx]);
+                    });
+                    delete callbacks[idx];
+                    delete inputStreams[idx];
+                }
+                _.each(streams, function registerOnOutput(stream) {
+                    stream.onOutput(invokeWithOneArg);
+                });
+                callbacks[idx] = invokeWithOneArg;
+                inputStreams[idx] = streams;
+            }
             chain.input = function input() {
-                var inIdx = 0
+                var i, removeStreamIndexes = [];
                 _.each(arguments, function bindInputs(inputs, inIdx) {
-                    if (Stream.isStream(inputs)) inputs = [inputs]
+                    if (stream.isStream(inputs)) {
+                        inputs = [inputs];
+                    }
                     if (_.isArray(inputs)) {
-                        inputs = _.reject(inputs, function isNotStream(obj) { return !Stream.isStream(obj) })
-                        wait(inputs, inIdx) }})
-                    return chain }}())
-        return chain }
+                        inputs = _.reject(inputs, function isNotStream(obj) {
+                            return !stream.isStream(obj);
+                        });
+                        wait(inputs, inIdx);
+                    }
+                });
+                for (i = arguments.length; i < inputStreams.length; i += 1) {
+                    removeStreamIndexes.push(i);
+                }
+                _.each(removeStreamIndexes, function (idx) {
+                    _.each(inputStreams[idx], function (stream) { stream.offOutput(callbacks[idx]); });
+                    delete callbacks[idx];
+                    delete inputStreams[idx];
+                });
+                return chain;
+            };
+        }());
+        return chain;
+    }
 
-    Stream.isStream = function (x) {
-        return !!(x && x.invoke && x.onOutput && x.offOutput && x.input) }
+    stream.isStream = function isStream(x) {
+        return !!(x && x.invoke && x.onOutput && x.offOutput && x.input);
+    };
 
-    var old = global.Stream
-    Stream.noConflict = function noConflict() {
-        global.Stream = old
-        return this }
+    old = global.stream;
+    stream.noConflict = function noConflict() {
+        global.stream = old;
+        return stream;
+    };
+    global.stream = stream;
 
-    var _ = {
-        breaker: {}
-        ,arrayProto: Array.prototype
-        ,objProto: Object.prototype
-        ,isArray:           Array.isArray || function isArray(obj) {
-            return _.objProto.toString.call(obj) == '[object Array]' }
-        ,isFunction:        function isFunction(obj) {
-            return _.objProto.toString.call(obj) == '[object Function]' }
-        ,isUndefined:       function isUndefined(obj) {
-            return obj === void 0 }
-        ,argumentsToArray:  function argumentsToArray(args) {
-            return _.arrayProto.slice.call(args) }
-        ,applyArgsToFn:     function applyArgsToFn(fn, args) {
+    _ = {
+        breaker: {},
+        arrayProto: Array.prototype,
+        objProto: Object.prototype,
+        isArray: Array.isArray || function isArray(obj) {
+            return _.objProto.toString.call(obj) === '[object Array]';
+        },
+        isFunction: function isFunction(obj) {
+            return _.objProto.toString.call(obj) === '[object Function]';
+        },
+        isUndefined: function isUndefined(obj) {
+            return obj === void 0;
+        },
+        argumentsToArray: function argumentsToArray(args) {
+            return _.arrayProto.slice.call(args);
+        },
+        applyArgsToFn: function applyArgsToFn(fn, args) {
             try {
-                fn.apply(global, args) }
-            catch (e) {
-                if (console && console.exception) console.exception(e) }}
-        ,each:              function each(obj, iterator, context) {
-            if (obj == null) return
+                fn.apply(global, args);
+            } catch (e) {
+                if (console && console.exception) {
+                    console.exception(e);
+                }
+            }
+        },
+        each: function each(obj, iterator, context) {
+            var i, l, key;
+            if (obj === null) {
+                return;
+            }
             if (_.arrayProto.forEach && obj.forEach === _.arrayProto.forEach) {
-                obj.forEach(iterator, context) }
-            else if (obj.length === +obj.length) {
-                for (var i = 0, l = obj.length; i < l; i++) {
-                    if (i in obj && iterator.call(context, obj[i], i, obj) === _.breaker) return }}
-            else {
-                for (var key in obj) {
+                obj.forEach(iterator, context);
+            } else if (obj.length === +obj.length) {
+                for (i = 0, l = obj.length; i < l; i += 1) {
+                    if (obj.hasOwnProperty(i) && iterator.call(context, obj[i], i, obj) === _.breaker) {
+                        return;
+                    }
+                }
+            } else {
+                for (key in obj) {
                     if (obj.hasOwnProperty(key)) {
-                        if (iterator.call(context, obj[key], key, obj) === _.breaker) return }}}}
-        ,reject:            function reject(obj, iterator, context) {
-            var results = []
-            if (obj == null) return results
+                        if (iterator.call(context, obj[key], key, obj) === _.breaker) {
+                            return;
+                        }
+                    }
+                }
+            }
+        },
+        reject: function reject(obj, iterator, context) {
+            var results = [];
+            if (obj === null) {
+                return results;
+            }
             _.each(obj, function exclude(value, index, list) {
-                if (!iterator.call(context, value, index, list)) results[results.length] = value })
-                return results }}
+                if (!iterator.call(context, value, index, list)) {
+                    results[results.length] = value;
+                }
+            });
+            return results;
+        }
+    };
 
-    global.Stream = Stream }(this))
+}(this));
