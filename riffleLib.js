@@ -1,4 +1,3 @@
-/*jshint laxbreak:true, laxcomma:true, asi:true */
 (function (global) {
     "use strict";
     var old,
