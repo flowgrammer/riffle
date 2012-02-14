@@ -1,11 +1,11 @@
 # riffle.js
 
-**riffle.js** is a stream library for managing asynchronous flow control. The library consists of a standalone *stream* module found in **riffle.js**. The *stream* module is the basic building block for asynchronous flow control. Networks of connected *stream* objects can be used to write programs that have many desireable properties.
+**riffle.js** is a stream library for managing asynchronous flow control. The library consists of a standalone *stream* module found in **riffle.js**. The *stream* module is the basic building block for asynchronous flow control. Networks of connected *stream* objects can be used to write programs that have many desirable properties.
 
 The library focuses on:
 
  - Modularity (decoupled in time, memory, and source code)
- - Parallelizability (good for divide and conquor algorithms)
+ - Parallelizability (good for divide and conquer algorithms)
  - Composability (if they were any more composable, they'd be legos)
  - Familiar abstractions (assembly line, flow)
  - Facilitates diagramming (structured analysis) and reasoning
@@ -28,7 +28,7 @@ var s1 = stream();
 </script>
 ```
 
-The contructor accepts a single callback function as an argument.
+The constructor accepts a single callback function as an argument.
 
 ```javascript
 var s1 = stream(function () {
@@ -99,7 +99,7 @@ a.invoke(3);
 b.invoke(4);
 ```
 
-With a little finess, streams can be used to make async wrappers around functions that are not normally asynchronous. Here's an example from **riffleLib.js**. Take a look at the tests for more examples.
+With a little finesse, streams can be used to make async wrappers around functions that are not normally asynchronous. Here's an example from **riffleLib.js**. Take a look at the tests for more examples.
 
 ```javascript
 var nums = stream();
