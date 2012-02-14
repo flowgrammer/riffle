@@ -45,7 +45,7 @@ var s1 = stream(function (outputFn, inData) {
   });
 ```
 
-To see the outputs of the stream, register a callback to the onOutput method. To invoke the stream, use the invoke method. Notice that the stream is fully chainable. Both onOutput and invoke are optional, and can be called any number of times.
+To see the outputs of the stream, register a callback to the onOutput method. To invoke the stream, use the invoke method. Both onOutput and invoke are optional, and can be called any number of times.
 
 ```javascript
 var s1 = stream(function (outputFn, inData) {
