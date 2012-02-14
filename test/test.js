@@ -1,7 +1,7 @@
 QUnit.moduleStart = function (name) {
     if (name === 'Stream API') {
         stop();
-        $script('/static/js/riffleLib.js', function () {
+        $script('riffleLib.js', function () {
             start();
         });
     }
@@ -57,7 +57,7 @@ module('Stream noConflict');
 
 asyncTest('noConflict', 4, function () {
     ok(typeof window.stream === 'undefined', 'Stream is initially not defined on the window object');
-    $script('/static/js/riffleLib.js', function () {
+    $script('riffleLib.js', function () {
         var s;
         ok(stream.call, 'Once loaded, Stream is defined on the window object');
         s = stream.noConflict();
