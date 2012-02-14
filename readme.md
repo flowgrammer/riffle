@@ -181,7 +181,7 @@ stream.offOutput(callback)
 
 Unregisters the *onOutput callback*, if previously registered to handle output from the stream.
 
-The *onOutput* method returns the stream for chaining.
+The *offOutput* method returns the stream for chaining.
 
 ### stream.offOutput callback
 
