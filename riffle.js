@@ -1,7 +1,20 @@
-(function (global) {
+(function (definition) {
+    // AMD
+    if (typeof define === "function") {
+        define(definition);
+    // CommonJS
+    } else if (typeof exports === "object") {
+        definition(this, exports);
+    // Browser
+    } else {
+        definition(this);
+    }
+}(function (global, exports) {
     "use strict";
     var old,
         _;
+
+    exports = exports || global;
 
     if (!global.setTimeout) {
         return;
@@ -115,12 +128,12 @@
         return !!(x && x.invoke && x.onOutput && x.offOutput && x.input);
     };
 
-    old = global.stream;
+    old = exports.stream;
     stream.noConflict = function noConflict() {
-        global.stream = old;
+        exports.stream = old;
         return stream;
     };
-    global.stream = stream;
+    exports.stream = stream;
 
     _ = {
         breaker: {},
@@ -184,4 +197,4 @@
         }
     };
 
-}(this));
+}));
