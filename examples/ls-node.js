@@ -2,7 +2,7 @@
 
 (function () {
     "use strict";
-    var riffle = require("./riffle.js"),
+    var riffle = require("../riffle.js"),
         fs = require("fs"),
         ls,
         path = process.argv[2] || "./";
