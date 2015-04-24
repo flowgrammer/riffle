@@ -1,0 +1,19 @@
+{
+  "name": "riffle-async",
+    
+  "version": "0.1.0",
+  "description": "Lightweight and flexible async flow control.",
+  "main": "riffle.js",
+  "directories": {
+    "example": "examples"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/flowgrammer/riffle.git"
+  },
+  "author": "Alex Case",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/flowgrammer/riffle/issues"
+  }
+}

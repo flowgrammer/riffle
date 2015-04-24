@@ -1,0 +1,6 @@
+web:
+  image: web
+  ports:
+   - "3000:3001"
+  volumes_from:
+    - riffle-data
