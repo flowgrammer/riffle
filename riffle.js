@@ -1,4 +1,4 @@
-/*global window, module, setInterval, console, define, exports, toString */
+/*global window, module, setInterval, setImmediate, setTimeout, console, define, exports, toString */
 /* riffle splits execution across iterations of the event loop, and maintains order of executed functions.
    http://www.nczonline.net/blog/2009/01/13/speed-up-your-javascript-part-1/
 */
@@ -200,7 +200,7 @@ var removeItem = function (list, item) {
   });
 };
 var tick = /* call the function in the next event loop iteration */ function (fn) {
-  return global.setImmediate ? global.setImmediate(fn) : global.setTimeout(fn, 0);
+  return setImmediate ? setImmediate(fn) : setTimeout(fn, 0);
 };
 var hookFn = /* make a function to store hooks in some list */ function (list, returnVal) {
   return function (f) {
@@ -597,7 +597,7 @@ var riffle = /* collection of stream utilities and hooks for a stream system */ 
       return client;
     };
   };
-  o.timerFactory = function (factoryTimeout) {
+  o.timer = function (factoryTimeout) {
     var timerId;
     var timeout = factoryTimeout || 1000;
     var tickFn = function (outFn, newTimeout) {
@@ -613,12 +613,12 @@ var riffle = /* collection of stream utilities and hooks for a stream system */ 
     };
     return stream(tickFn);
   };
-  o.logFactory = function (factoryMsg /* 'What's up' */ ) {
+  o.log = function (defaultMsg /* "What's up" */ ) {
     return stream(function (outFn, msg) {
-      console.log(factoryMsg || msg || 'logger created at ' + Date.now());
+      var format = msg || defaultMsg || 'logger created at ' + Date.now();
       var args = [].slice.call(arguments);
-      args.shift();
-      outFn.apply(this, args); // for logging connections between 
+      console.log.apply(null, [format].concat(args.slice(2)));
+      outFn.apply(this, args.slice(1)); // for logging connections between 
     });
   };
   o.lockServer = function (lock /* function (prevArgs, args) { return true; } */ ) {
