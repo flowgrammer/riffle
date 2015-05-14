@@ -1,6 +1,9 @@
+# sudo docker run -d -v ~/projects/me/riffle:/app --name riffle-data debian:latest
 web:
   image: web
   ports:
    - "3000:3001"
+  environment:
+   - NODE_PATH=/usr/lib/node_modules
   volumes_from:
     - riffle-data
